@@ -1,0 +1,117 @@
+(Note: This is the original READEME as distributed with the original 
+2.0.0 driver)
+
+Copyright (C) 1995,1996 Joseph J. Pfeiffer, Jr -- All Rights Reserved.
+
+This is release 1.1.3 of cpqpen.  Included in this distribution is:
+    CHANGES:     Log of version-by-version changes
+    COPYING:     Information on use, redistribution, and modification
+    Makefile:    Includes compilation, installation, and distribution
+    README:      This file
+	config.mk:	 site-specific configuration parameters
+    cpqpen.c, cpqpen.h:
+                 a Linux device driver for the Compaq Concerto pen
+    pencal.c:    a calibration utility for using the pen with xfree86
+    pentest.c:   a simple test program to verify operation of the pen and
+                 driver
+    rc.cpqpen:   a pen enable/disable utility script
+    xf86_Config.h, xf86_Mouse,c, xf86Events.c xf86Priv.h, xf86Config.c:
+                 portions of the xfree86 X server which are modified to
+                 add Concerto pen support.
+    XF86Config:  an xfree86 configuration file for the Concerto with pen
+
+Limitations:     This software has been compiled using gcc 2.7.2 and has
+                 been tested using Linux 2.0.0 and a modified xfree86
+                 3.1.1.  It is completely untried and untested with
+                 all other versions. 
+
+                 Also, this software is specific to the Compaq Concerto.
+                 I don't know anything about other pen-based systems on 
+                 the market, and so I have no idea whether this would
+                 work with some other machine or not.  I'd be pretty
+                 surprised if it worked, though.
+
+Version information:
+                 First number:  incremented on major rewrite
+                 Second number: incremented with feature additions
+                 Third number:  incremented with bug fixes.
+
+Installation:    1.  Edit the config.mk file to put the software where you
+                     want it and to determine whether you want module
+                     versions.
+
+                 2.  Type ``make install.''  This will compile the driver and
+                     test programs and install the software.  A .bak file
+                     will be created for any files displaced by the
+                     installation procedure, and the versions from this
+                     distribution substituted.  It will put the new X
+                     server source files in place, but will not compile or
+                     install the X server.  It will also add the line
+                     ``/etc/rc.d/rc.cpqpen start'' to the appropriate
+                     startup script file ($(RC)/$(STARTUP).
+
+                 3.  If you are using Nick Holloway's MAKEDEV 2.2,
+                     install the patch in MAKEDEV.patch.  If you
+                     aren't running it, you really should be; but
+                     rc.cpqpen will kludge around it.  Note that the
+                     MAKEDEV distributed with Slackware is a different
+                     one (it identifies itself as v 1.1.1.1)!  The patch
+                     will fail if you try to apply it to this one.  Nick
+                     tells me his next release of MAKEDEV will include
+                     cpqpen, so if you have a version after 2.2, you will
+                     not need the patch.
+
+                 4.  Start the driver with ``/etc/rc.d/rc.cpqpen start''
+                     This should execute successfully.  Information about
+                     the installation (in particular, the IRQ and major
+                     device numbers for the pen) should appear in the
+                     /var/adm/messages file.  The character special file
+                     /dev/cpqpen should also now exist, with the major device
+                     number as given to the pen and a minor device number
+                     of 0.
+
+                5.   Test the pen installation with the pentest program.
+                     Whenever the pen is in range of the screen this
+                     program should report its location (in pen coordinates,
+                     which are most assuredly not screen coordinates),
+                     whether the pen is touching the screen, and whether the
+                     pen barrel button is depressed.
+
+                6.   Start the X window system with startx.  The pen should
+                     work as the pointer device.  As configured, touching
+                     the pen to the screen should act as pressing the left
+                     button, pressing the barrel switch should act as pressing
+                     the right button, and doing both should act as the middle
+                     button.
+
+                7.   To recalibrate the pen for X, use the pencal program.
+                     It will generate a line to use in place of the existing
+                     ``Protocol'' line in the XF86Config file.
+
+PCMCIA:         I have had problems with Dave Hinds' PCMCIA driver trying
+                to use interrupts that are needed by the pen driver.  The
+                symptom of the problem is erratic or nonexistent response
+                by the pen, PCMCIA devices, or both.
+
+                I currently am using a /etc/sysconfig/pcmcia file which
+                includes the line
+
+                    PCIC_OPTS="poll_interval=100"
+
+                and everything seems to be working well.  At one time
+                I had a PCMCIA interrupt mask that worked, but it
+                got lost on a PCMCIA upgrade.  I need to work that
+                out again...
+NOTES:
+
+The X server is based on XFree 3.1.1.  The Compaq AVGA driver does not
+work with 3.1.2; I'm trying to find the problem.
+
+If you have an X source tree, the installation procedure will have
+inserted the modified mouse drivers.  If you wish, you should be able
+to recompile X with the modified drivers.
+
+In event of trouble:  send me e-mail (pfeiffer@cs.nmsu.edu) and I'll try
+                to help you...
+
+Please send me e-mail and let me know how this works for you!
